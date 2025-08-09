@@ -72,7 +72,7 @@ For Software:
 ![Screenshot1](s1.png)
 *front page*
 
-![Screenshot2](s2.png))
+![Screenshot2](s2.png)
 * uploading image*
 
 ![Screenshot3](s3.png)
@@ -104,7 +104,8 @@ For Hardware:
 ### Project Demo
 # Video
 [Add your demo video link here]
-*Explain what the video demonstrates*
+(https://drive.google.com/file/d/1zfPW5gG6GUioRvCkQWpfrVF22bLL8Fg0/view?usp=drive_link)
+
 
 # Additional Demos
 [Add any extra demo materials/links]
