@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Egg Yolk Radius Measurement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 { color: #fff; }
+        #canvas {
+            border: 2px solid #444;
+            margin-top: 10px;
+            cursor: crosshair;
+            background: white;
+            border-radius: 8px;
+        }
+        #result {
+            font-size: 18px;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px;
+            border-radius: 6px;
+        }
+        input[type="file"] {
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  
+    <div class="hen-chicken-bg">
+        <div class="hen" style="animation-delay: 0s; bottom: 10vh;">
+            <div class="hen-eye"></div>
+            <div class="hen-wattle"></div>
+            <div class="hen-comb"></div>
+        </div>
+        <div class="chick" style="animation-delay: 2s; bottom: 8vh;">
+            <div class="chick-eye"></div>
+        </div>
+        <div class="hen" style="animation-delay: 8s; bottom: 18vh; transform: scale(0.85) scaleX(-1);">
+            <div class="hen-eye"></div>
+            <div class="hen-wattle"></div>
+            <div class="hen-comb"></div>
+        </div>
+        <div class="chick" style="animation-delay: 12s; bottom: 16vh; transform: scale(0.8);">
+            <div class="chick-eye"></div>
+        </div>
+        <div class="chick" style="animation-delay: 16s; bottom: 12vh; transform: scale(0.7);">
+            <div class="chick-eye"></div>
+        </div>
+    </div>
+   
+    <div class="hen-chicken-bg">
+        <div class="hen"></div>
+        <div class="chick"></div>
+    </div>
+   
+<div class="hen-chicken-bg">
+    <div class="hen">
+        <div class="hen-eye"></div>
+        <div class="hen-wattle"></div>
+        <div class="hen-comb"></div>
+    </div>
+    <div class="chick">
+        <div class="chick-eye"></div>
+    </div>
+</div>
+
+<div class="hen-chicken-bg">
+    <div class="hen" style="animation-delay: 0s; bottom: 10vh;">
+        <div class="hen-eye"></div>
+        <div class="hen-wattle"></div>
+        <div class="hen-comb"></div>
+    </div>
+    <div class="chick" style="animation-delay: 2s; bottom: 8vh;">
+        <div class="chick-eye"></div>
+    </div>
+    <div class="hen" style="animation-delay: 6s; bottom: 18vh; transform: scale(0.85) scaleX(-1);">
+        <div class="hen-eye"></div>
+        <div class="hen-wattle"></div>
+        <div class="hen-comb"></div>
+    </div>
+    <div class="chick" style="animation-delay: 8s; bottom: 16vh; transform: scale(0.8);">
+        <div class="chick-eye"></div>
+    </div>
+    <div class="chick" style="animation-delay: 10s; bottom: 12vh; transform: scale(0.7);">
+        <div class="chick-eye"></div>
+    </div>
+</div>
+<h1 class="typewriter"><span id="typewriter-text"></span>🥚 Egg Yolk Radius Measurement</h1>
+    
+    <input type="file" id="upload" accept="image/*"><br>
+    <canvas id="canvas"></canvas>
+    <div id="result">Click yolk center, then click its edge.</div>
+
+    <script>
+        const upload = document.getElementById("upload");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const result = document.getElementById("result");
+
+        let img = new Image();
+        let clicks = [];
+
+        // ---- SETTINGS ----
+        const DPI = 96; // Change this to your image's DPI
+        const CM_PER_PIXEL = 2.54 / DPI; // cm per pixel
+
+        // Load image
+        upload.addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    clicks = [];
+                    result.innerHTML = "Click yolk center, then click its edge.";
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        // Handle clicks for measurement
+        canvas.addEventListener("click", function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            clicks.push({x, y});
+
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = clicks.length === 1 ? "red" : "blue";
+            ctx.fill();
+
+            if (clicks.length === 2) {
+                const dx = clicks[1].x - clicks[0].x;
+                const dy = clicks[1].y - clicks[0].y;
+                const pixelRadius = Math.sqrt(dx*dx + dy*dy);
+                const cmRadius = pixelRadius * CM_PER_PIXEL;
+
+                // Draw yolk circle
+                ctx.beginPath();
+                ctx.arc(clicks[0].x, clicks[0].y, pixelRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = "green";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                result.innerHTML = `Radius: ${cmRadius.toFixed(2)} cm`;
+                clicks = [];
+            }
+        });
+    </script>
+</body>
+</html>
